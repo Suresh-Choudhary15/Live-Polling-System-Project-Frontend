@@ -172,7 +172,7 @@ const StudentDashboard = () => {
         );
 
       case STUDENT_STATES.ANSWERING_POLL:
-        return currentPoll ? (
+        return currentPoll ? ( // ADD THIS CHECK
           <PollQuestion
             poll={currentPoll}
             timeRemaining={timeRemaining}
