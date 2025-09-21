@@ -11,6 +11,18 @@ const PollQuestion = ({
 }) => {
   const [selectedOption, setSelectedOption] = useState(null);
 
+  // Add null checks to prevent errors
+  if (!poll) {
+    return (
+      <div className="poll-question-container">
+        <div className="loading">
+          <div className="spinner"></div>
+          <p>Loading poll...</p>
+        </div>
+      </div>
+    );
+  }
+
   const handleOptionSelect = (optionIndex) => {
     if (disabled || timeRemaining <= 0) return;
     setSelectedOption(optionIndex);
@@ -30,31 +42,39 @@ const PollQuestion = ({
       <div className="question-timer mb-20">
         <span>Question 1</span>
         <Timer
-          timeRemaining={timeRemaining}
-          totalTime={poll.timeLimit}
+          timeRemaining={timeRemaining || 0}
+          totalTime={poll.timeLimit || 60}
           showProgress={false}
         />
       </div>
 
-      <div className="question-header">{poll.question}</div>
+      <div className="question-header">
+        {poll.question || "Loading question..."}
+      </div>
 
       <div className="options-list">
-        {poll.options.map((option, index) => (
-          <div
-            key={index}
-            className={`option-item ${
-              selectedOption === index ? "selected" : ""
-            } ${disabled ? "disabled" : ""}`}
-            onClick={() => handleOptionSelect(index)}
-          >
+        {poll.options && poll.options.length > 0 ? (
+          poll.options.map((option, index) => (
             <div
-              className={`option-radio ${
-                selectedOption === index ? "checked" : ""
-              }`}
-            />
-            <span>{option.text}</span>
+              key={index}
+              className={`option-item ${
+                selectedOption === index ? "selected" : ""
+              } ${disabled ? "disabled" : ""}`}
+              onClick={() => handleOptionSelect(index)}
+            >
+              <div
+                className={`option-radio ${
+                  selectedOption === index ? "checked" : ""
+                }`}
+              />
+              <span>{option.text || `Option ${index + 1}`}</span>
+            </div>
+          ))
+        ) : (
+          <div className="loading">
+            <p>Loading options...</p>
           </div>
-        ))}
+        )}
       </div>
 
       <div className="mt-20">

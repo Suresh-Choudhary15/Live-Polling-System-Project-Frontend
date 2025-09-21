@@ -1,8 +1,20 @@
-// API Configuration
+// FIXED API Configuration with multiple fallbacks
 export const API_BASE_URL =
-  process.env.REACT_APP_API_URL || "http://localhost:5000";
+  process.env.REACT_APP_API_URL ||
+  process.env.REACT_APP_BACKEND_URL ||
+  "http://localhost:5000";
+
 export const SOCKET_URL =
-  process.env.REACT_APP_SOCKET_URL || "http://localhost:5000";
+  process.env.REACT_APP_SOCKET_URL ||
+  process.env.REACT_APP_API_URL ||
+  process.env.REACT_APP_BACKEND_URL ||
+  "http://localhost:5000";
+
+// Debug logging
+console.log("🔧 Configuration loaded:");
+console.log("📡 API_BASE_URL:", API_BASE_URL);
+console.log("🔌 SOCKET_URL:", SOCKET_URL);
+console.log("🌍 Environment:", process.env.NODE_ENV);
 
 // Socket Events
 export const SOCKET_EVENTS = {
@@ -82,15 +94,22 @@ export const TEACHER_STATES = {
   VIEWING_HISTORY: "viewing_history",
 };
 
-// Error Messages
+// ENHANCED Error Messages
 export const ERROR_MESSAGES = {
-  CONNECTION_FAILED: "Failed to connect to server",
-  INVALID_NAME: "Please enter a valid name",
-  POLL_CREATION_FAILED: "Failed to create poll",
-  ANSWER_SUBMISSION_FAILED: "Failed to submit answer",
-  STUDENT_REMOVAL_FAILED: "Failed to remove student",
-  NETWORK_ERROR: "Network error. Please check your connection.",
-  UNKNOWN_ERROR: "An unexpected error occurred",
+  CONNECTION_FAILED:
+    "Failed to connect to server. Please check your internet connection.",
+  SOCKET_CONNECTION_FAILED:
+    "Real-time connection failed. Please refresh the page.",
+  INVALID_NAME: "Please enter a valid name (2-50 characters, letters only)",
+  POLL_CREATION_FAILED: "Failed to create poll. Please try again.",
+  ANSWER_SUBMISSION_FAILED: "Failed to submit answer. Please try again.",
+  STUDENT_REMOVAL_FAILED: "Failed to remove student. Please try again.",
+  NETWORK_ERROR: "Network error. Please check your connection and try again.",
+  UNKNOWN_ERROR: "An unexpected error occurred. Please refresh the page.",
+  SERVER_UNAVAILABLE:
+    "Server is currently unavailable. Please try again later.",
+  JOIN_STUDENT_FAILED:
+    "Failed to join as student. Please check your connection and try again.",
 };
 
 // Success Messages
@@ -99,30 +118,33 @@ export const SUCCESS_MESSAGES = {
   ANSWER_SUBMITTED: "Answer submitted successfully",
   STUDENT_REMOVED: "Student removed successfully",
   CONNECTION_ESTABLISHED: "Connected successfully",
+  STUDENT_JOINED: "Successfully joined the session",
 };
 
 // Local Storage Keys
 export const STORAGE_KEYS = {
-  STUDENT_NAME: "student_name",
-  USER_ROLE: "user_role",
-  THEME_PREFERENCE: "theme_preference",
+  STUDENT_NAME: "live_polling_student_name",
+  USER_ROLE: "live_polling_user_role",
+  THEME_PREFERENCE: "live_polling_theme",
+  SOCKET_ID: "live_polling_socket_id",
 };
 
 // Colors for Charts/Results (matching Figma palette)
 export const CHART_COLORS = [
   "#4F0DCE", // Primary purple
-  "#77650A", // Secondary purple
-  "#576700", // Tertiary purple
+  "#7765DA", // Secondary purple
+  "#5767D0", // Tertiary purple
   "#6E6E6E", // Medium gray
   "#373737", // Dark gray
   "#F2F2F2", // Light gray
 ];
 
-// Validation Patterns
+// ENHANCED Validation Patterns
 export const VALIDATION_PATTERNS = {
-  NAME: /^[a-zA-Z\s]{2,50}$/,
+  NAME: /^[a-zA-Z\s\u00C0-\u017F]{2,50}$/, // Allow accented characters
   QUESTION: /^.{5,500}$/,
   OPTION: /^.{1,100}$/,
+  EMAIL: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
 };
 
 // Animation Durations (in milliseconds)
@@ -156,12 +178,22 @@ export const BUTTON_SIZES = {
   LARGE: "lg",
 };
 
-// Timeouts and Intervals
+// ENHANCED Timeouts and Intervals
 export const TIMEOUTS = {
   DEBOUNCE: 300,
   RETRY: 1000,
   TOAST: 3000,
   POLL_UPDATE: 1000,
+  CONNECTION_RETRY: 2000,
+  HEALTH_CHECK: 5000,
+};
+
+// Connection Configuration
+export const CONNECTION_CONFIG = {
+  MAX_RETRY_ATTEMPTS: 5,
+  RETRY_DELAY: 1000,
+  PING_INTERVAL: 25000,
+  PING_TIMEOUT: 5000,
 };
 
 export default {
@@ -182,4 +214,5 @@ export default {
   BUTTON_VARIANTS,
   BUTTON_SIZES,
   TIMEOUTS,
+  CONNECTION_CONFIG,
 };

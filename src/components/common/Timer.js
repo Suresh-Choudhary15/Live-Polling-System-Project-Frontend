@@ -1,7 +1,11 @@
 import React from "react";
 
-const Timer = ({ timeRemaining, totalTime, showProgress = true }) => {
+const Timer = ({ timeRemaining = 0, totalTime = 60, showProgress = true }) => {
   const formatTime = (seconds) => {
+    if (seconds === null || seconds === undefined || isNaN(seconds)) {
+      seconds = 0;
+    }
+
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, "0")}:${secs
@@ -10,8 +14,9 @@ const Timer = ({ timeRemaining, totalTime, showProgress = true }) => {
   };
 
   const getProgressPercentage = () => {
-    if (!totalTime) return 0;
-    return ((totalTime - timeRemaining) / totalTime) * 100;
+    if (!totalTime || totalTime <= 0) return 0;
+    const progress = ((totalTime - timeRemaining) / totalTime) * 100;
+    return Math.min(100, Math.max(0, progress));
   };
 
   const getTimeColor = () => {
@@ -44,7 +49,7 @@ const Timer = ({ timeRemaining, totalTime, showProgress = true }) => {
         </div>
       )}
 
-      {timeRemaining <= 10 && (
+      {timeRemaining <= 10 && timeRemaining > 0 && (
         <div className="timer-warning">Time running out!</div>
       )}
     </div>

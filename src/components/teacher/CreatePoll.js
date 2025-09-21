@@ -253,7 +253,8 @@ const CreatePoll = ({ onCreatePoll, loading = false }) => {
             }
             className="w-full"
           >
-            Ask Question
+            {/* Ask Question */}
+            🚀 Start Poll
           </Button>
         </div>
       </form>

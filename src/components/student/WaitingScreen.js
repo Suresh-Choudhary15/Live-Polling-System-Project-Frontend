@@ -1,6 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
+import socketService from "../../services/socketService";
 
-const WaitingScreen = ({ studentName }) => {
+const WaitingScreen = ({ studentName, onPollReceived }) => {
+  useEffect(() => {
+    // Listen for new polls
+    const handleNewPoll = (pollData) => {
+      console.log("📝 New poll received:", pollData);
+      if (onPollReceived) {
+        onPollReceived(pollData);
+      }
+    };
+
+    socketService.on("new-poll", handleNewPoll);
+
+    return () => {
+      socketService.off("new-poll", handleNewPoll);
+    };
+  }, [onPollReceived]);
+
   return (
     <div className="waiting-screen">
       <div className="badge badge-purple mb-20">Interactive Poll</div>
